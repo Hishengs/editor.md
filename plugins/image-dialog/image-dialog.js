@@ -49,7 +49,8 @@
                 // 添加自定义上传参数
                 var paramsContent = '';
                 for(var key in settings.imageUploadParams){
-                  paramsContent += ('<input type="hidden" name="'+key+'" value="'+settings.imageUploadParams[key]+'" />\n');
+                    if(settings.imageUploadParams.hasOwnProperty(key))
+                        paramsContent += ('<input type="hidden" name="'+key+'" value="'+settings.imageUploadParams[key]+'" />\n');
                 }
                 var dialogContent = ( (settings.imageUpload) ? "<form action=\"" + action +"\" target=\"" + iframeName + "\" method=\"post\" enctype=\"multipart/form-data\" class=\"" + classPrefix + "form\">" : "<div class=\"" + classPrefix + "form\">" ) +
                                         ( (settings.imageUpload) ? "<iframe name=\"" + iframeName + "\" id=\"" + iframeName + "\" guid=\"" + guid + "\"></iframe>" : "" ) +

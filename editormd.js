@@ -13,26 +13,26 @@
 ;(function(factory) {
   "use strict";
 
-	// CommonJS/Node.js
-	if (typeof require === "function" && typeof exports === "object" && typeof module === "object")
+    // CommonJS/Node.js
+    if (typeof require === "function" && typeof exports === "object" && typeof module === "object")
     {
         module.exports = factory;
     }
-	else if (typeof define === "function")  // AMD/CMD/Sea.js
-	{
+    else if (typeof define === "function")  // AMD/CMD/Sea.js
+    {
         if (define.amd) // for Require.js
         {
             /* Require.js define replace */
         }
         else
         {
-		    define(["jquery"], factory);  // for Sea.js
+            define(["jquery"], factory);  // for Sea.js
         }
-	}
-	else
-	{
+    }
+    else
+    {
         window.editormd = factory();
-	}
+    }
 
 }(function() {
 
@@ -42,9 +42,9 @@
 
     var $ = (typeof (jQuery) !== "undefined") ? jQuery : Zepto;
 
-  	if (typeof ($) === "undefined") {
-  		return ;
-  	}
+    if (typeof ($) === "undefined") {
+        return ;
+    }
 
     /**
      * editormd
@@ -89,6 +89,12 @@
     };
 
     editormd.defaults     = {
+        //-扩展参数
+        syncPreviewContent   : true, // 是否同步预览内容(解决不开启watch而开启预览时预览无内容的问题)
+        //--图片上传相关配置
+        imageUploadParams    : {}, // 添加自定义上传 post 参数(以 hidden input 的方式)
+        imageUploadName      : '', // 指定上传的图片名
+
         mode                 : "gfm",          //gfm or markdown
         name                 : "",             // Form element name
         value                : "",             // value for CodeMirror, if mode not gfm/markdown
@@ -108,20 +114,20 @@
         gotoLine             : true,
         codeFold             : false,
         autoHeight           : false,
-		    autoFocus            : true,
+            autoFocus            : true,
         autoCloseTags        : true,
         searchReplace        : true,
         syncScrolling        : true,           // true | false | "single", default true
         readOnly             : false,
         tabSize              : 4,
-		    indentUnit           : 4,
+            indentUnit           : 4,
         lineNumbers          : true,
-		    lineWrapping         : true,
-    		autoCloseBrackets    : true,
-    		showTrailingSpace    : true,
-    		matchBrackets        : true,
-    		indentWithTabs       : true,
-    		styleSelectedText    : true,
+            lineWrapping         : true,
+            autoCloseBrackets    : true,
+            showTrailingSpace    : true,
+            matchBrackets        : true,
+            indentWithTabs       : true,
+            styleSelectedText    : true,
         matchWordHighlight   : true,           // options: true, false, "onselected"
         styleActiveLine      : true,           // Highlight the current line
         dialogLockScreen     : true,
@@ -144,14 +150,12 @@
         onfullscreenExit     : function() {},
         onscroll             : function() {},
         onpreviewscroll      : function() {},
-        // 图片上传相关配置
+        
         imageUpload          : false,
         imageFormats         : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
         imageUploadURL       : "",
         crossDomainUpload    : false,
         uploadCallbackURL    : "",
-        imageUploadParams    : {}, // 添加自定义上传参数(post)
-        imageUploadName:     : '', // 指定上传的图片名
 
         toc                  : true,           // Table of contents
         tocm                 : false,           // Using [TOCM], auto create ToC dropdown menu
@@ -385,7 +389,7 @@
 
             settings.pluginPath = (settings.pluginPath === "") ? settings.path + "../plugins/" : settings.pluginPath;
 
-            this.state.watching = (settings.watch) ? true : false;
+            this.state.watching = settings.syncPreviewContent || (settings.watch) ? true : false;
 
             if ( !editor.hasClass("editormd") ) {
                 editor.addClass("editormd");
@@ -1308,7 +1312,7 @@
 
         createInfoDialog : function() {
             var _this        = this;
-	          var editor       = this.editor;
+              var editor       = this.editor;
             var classPrefix  = this.classPrefix;
 
             var infoDialogHTML = [
@@ -1348,16 +1352,16 @@
         infoDialogPosition : function() {
             var infoDialog = this.infoDialog;
 
-      			var _infoDialogPosition = function() {
-      				infoDialog.css({
-      					top  : ($(window).height() - infoDialog.height()) / 2 + "px",
-      					left : ($(window).width()  - infoDialog.width()) / 2  + "px"
-      				});
-      			};
+                var _infoDialogPosition = function() {
+                    infoDialog.css({
+                        top  : ($(window).height() - infoDialog.height()) / 2 + "px",
+                        left : ($(window).width()  - infoDialog.width()) / 2  + "px"
+                    });
+                };
 
-      			_infoDialogPosition();
+                _infoDialogPosition();
 
-      			$(window).resize(_infoDialogPosition);
+                $(window).resize(_infoDialogPosition);
 
             return this;
         },
@@ -1374,9 +1378,9 @@
             $("html,body").css("overflow-x", "hidden");
 
             var _this       = this;
-	          var editor      = this.editor;
+              var editor      = this.editor;
             var settings    = this.settings;
-	          var infoDialog  = this.infoDialog = editor.children("." + this.classPrefix + "dialog-info");
+              var infoDialog  = this.infoDialog = editor.children("." + this.classPrefix + "dialog-info");
 
             if (infoDialog.length < 1)
             {
@@ -1386,13 +1390,13 @@
             this.lockScreen(true);
 
             this.mask.css({
-						opacity         : settings.dialogMaskOpacity,
-						backgroundColor : settings.dialogMaskBgColor
-					}).show();
+                        opacity         : settings.dialogMaskOpacity,
+                        backgroundColor : settings.dialogMaskBgColor
+                    }).show();
 
-    			infoDialog.css("z-index", editormd.dialogZindex).show();
+                infoDialog.css("z-index", editormd.dialogZindex).show();
 
-    			this.infoDialogPosition();
+                this.infoDialogPosition();
 
           return this;
         },
@@ -1738,23 +1742,23 @@
                 preview.unbind(mouseOrTouch("scroll", "touchmove"));
             };
 
-      			codeMirror.bind({
-      				mouseover  : cmBindScroll,
-      				mouseout   : cmUnbindScroll,
-      				touchstart : cmBindScroll,
-      				touchend   : cmUnbindScroll
-      			});
+                codeMirror.bind({
+                    mouseover  : cmBindScroll,
+                    mouseout   : cmUnbindScroll,
+                    touchstart : cmBindScroll,
+                    touchend   : cmUnbindScroll
+                });
 
             if (settings.syncScrolling === "single") {
                 return this;
             }
 
-      			preview.bind({
-      				mouseover  : previewBindScroll,
-      				mouseout   : previewUnbindScroll,
-      				touchstart : previewBindScroll,
-      				touchend   : previewUnbindScroll
-      			});
+                preview.bind({
+                    mouseover  : previewBindScroll,
+                    mouseout   : previewUnbindScroll,
+                    touchstart : previewBindScroll,
+                    touchend   : previewUnbindScroll
+                });
 
             return this;
         },
@@ -3959,7 +3963,7 @@
             smartypants : true
         };
 
-		    markdownDoc = new String(markdownDoc);
+            markdownDoc = new String(markdownDoc);
 
         var markdownParsed = marked(markdownDoc, markedOptions);
 
