@@ -152,7 +152,7 @@
         onpreviewscroll      : function() {},
         
         imageUpload          : false,
-        imageFormats         : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+        imageFormats         : [],
         imageUploadURL       : "",
         crossDomainUpload    : false,
         uploadCallbackURL    : "",

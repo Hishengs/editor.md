@@ -30,6 +30,13 @@
             var imageUploadName = this.settings.imageUploadName || classPrefix + "image-file";
 			var dialogName  = classPrefix + pluginName, dialog;
 
+            this.settings.imageFormats = this.settings.imageFormats.length?this.settings.imageFormats:["jpg", "jpeg", "gif", "png", "bmp", "webp"];
+            var imageUploadAllowedMines = [];
+            for(var i=0, len=this.settings.imageFormats.length;i<len;i++){
+                imageUploadAllowedMines.push('image/'+this.settings.imageFormats[i]);
+            }
+            imageUploadAllowedMines = imageUploadAllowedMines.length?imageUploadAllowedMines.join(','):'image/*';
+
 			cm.focus();
 
             var loading = function(show) {
@@ -57,7 +64,7 @@
                                         "<label>" + imageLang.url + "</label>" +
                                         "<input type=\"text\" data-url />" + (function(){
                                             return (settings.imageUpload) ? "<div class=\"" + classPrefix + "file-input\">" +
-                                                                                "<input type=\"file\" name=\"" + imageUploadName + "\" accept=\"image/jpg,image/jpeg,image/gif,image/png,image/bmp,image/webp\" />" +
+                                                                                "<input type=\"file\" name=\"" + imageUploadName + "\" accept=\""+ imageUploadAllowedMines +"\" />" +
                                                                                 "<input type=\"submit\" value=\"" + imageLang.uploadButton + "\" />" +
                                                                             "</div>" : "";
                                         })() +
